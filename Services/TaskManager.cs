@@ -6,8 +6,8 @@ namespace StudentTaskTracker.Services;
 
 public class TaskManager
 {
-    private List<ProjectTask> _tasks;
-    private List<TeamMember> _members;
+    private List<ProjectTask> _tasks; // Görevler
+    private List<TeamMember> _members; // Üyeler
 
     public TaskManager()
     {
@@ -60,6 +60,7 @@ public class TaskManager
         }
     }
 
+    // 3. YENİ İŞ: BELİRLİ BİR ÜYENİN GÖREVLERİNİ LİSTELEME
     public void ListTasksByMemberId(int memberId)
     {
         bool foundAnyTask = false;
@@ -73,7 +74,7 @@ public class TaskManager
             if (task.AssignedMember != null && task.AssignedMember.Id == memberId)
             {
                 foundAnyTask = true;
-                Console.WriteLine($"Görev ID: {task.Id}, Başlık: {task.Title}, Durum: {task.Status}, Bitiş Tarihi: {task.DueDate.ToShortDateString()}");
+                Console.WriteLine($"Görev ID: {task.Id}, Başlık: {task.Title}, Durum: {task.Status}, Bitiş Tarihi: {task.DueDate:dd.MM.yyyy}");
             }
         }
 
@@ -85,4 +86,98 @@ public class TaskManager
         }
     }
 
+    // 4. YENİ İŞ: GÖREV EKLEME
+    public void AddTask(int id, string title, string description, DateTime dueDate)
+    {
+        foreach (var task in _tasks)
+        {
+            if (task.Id == id)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Bu görev zaten mevcut.");
+                Console.ResetColor();
+                return;
+            }
+        }
+
+        ProjectTask newTask = new ProjectTask(id, title, description, dueDate);
+        _tasks.Add(newTask);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"{title} başarıyla eklendi.");
+        Console.ResetColor();
+    }
+
+    // 5. YENİ İŞ: TÜM GÖREVLERİ EKRANA YAZDIRMA
+    public void ListTasks()
+    {
+        if (_tasks.Count == 0)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Henüz eklenmiş görev yok.");
+            Console.ResetColor();
+            return;
+        }
+
+        Console.BackgroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("--- Görev Listesi ---");
+        Console.ResetColor();
+
+        foreach (var task in _tasks)
+        {
+            string assignedMemberInfo = task.AssignedMember != null ? $"Atanan Üye: {task.AssignedMember.Name}" : "Atanan Üye: Yok";
+            Console.WriteLine($"Görev ID: {task.Id}, Başlık: {task.Title}, Durum: {task.Status}, Bitiş Tarihi: {task.DueDate:dd.MM.yyyy}, {assignedMemberInfo}");
+        }
+    }
+
+    // 6. YENİ İŞ: GÖREV ATAMA
+    public void AssignTask(int taskId, int memberId)
+    {
+        foreach (var task in _tasks)
+        {
+            if (task.Id == taskId)
+            {
+                foreach (var member in _members)
+                {
+                    if (member.Id == memberId)
+                    {
+                        task.AssignedMember = member;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Görev '{task.Title}' başarıyla {member.Name} adlı üyeye atandı.");
+                        Console.ResetColor();
+                        return;
+                    }
+                }
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Belirtilen ID'ye sahip bir üye bulunamadı.");
+                Console.ResetColor();
+                return;
+            }
+        }
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Belirtilen ID'ye sahip bir görev bulunamadı.");
+        Console.ResetColor();
+    }
+
+    // 7. YENİ İŞ: GÖREV DURUMUNU GÜNCELLEME
+    public void UpdateTaskStatus(int taskId, StudentTaskTracker.Models.TaskStatus newStatus)
+    {
+        foreach (var task in _tasks)
+        {
+            if (task.Id == taskId)
+            {
+                task.Status = newStatus;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Görev '{task.Title}' durumu başarıyla '{newStatus}' olarak güncellendi.");
+                Console.ResetColor();
+                return;
+            }
+        }
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Belirtilen ID'ye sahip bir görev bulunamadı.");
+        Console.ResetColor();
+    }
 }

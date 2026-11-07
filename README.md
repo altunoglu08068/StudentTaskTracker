@@ -20,7 +20,7 @@ StudentTaskTracker helps student project teams organize tasks, assign responsibi
 ## Current Status
 - [x] Initial repository setup
 - [x] Domain models implementation (`TaskStatus`, `TeamMember`, `ProjectTask`)
-- [ ] Task and member management services (`TaskManager`)
+- [x] Task and member management services (`TaskManager`)
 - [ ] Interactive console interface
 - [ ] Database persistence (SQLite / EF Core)
 
