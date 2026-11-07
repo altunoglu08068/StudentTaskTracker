@@ -12,6 +12,7 @@ StudentTaskTracker helps student project teams organize tasks, assign responsibi
 - Assign a task to a team member and list tasks assigned to a specific member.
 - Update a task's status: `Backlog`, `InProgress`, `InReview`, or `Done`.
 - Validate positive numeric IDs and status selections in the interactive menu.
+- Persist tasks and team members in a SQLite database using Entity Framework Core.
 
 ## Project Structure
 - `Models/`: Core domain models representing business entities.
@@ -31,7 +32,7 @@ StudentTaskTracker helps student project teams organize tasks, assign responsibi
 - [x] Domain models implementation (`TaskStatus`, `TeamMember`, `ProjectTask`)
 - [x] Task and member management services (`TaskManager`)
 - [x] Interactive console interface
-- [ ] Database persistence (SQLite / EF Core)
+- [x] Database persistence (SQLite / EF Core)
 
 ## How to Run Locally
 Requires the .NET 10 SDK.
@@ -41,4 +42,26 @@ dotnet build
 dotnet run
 ```
 
-All tasks and team members are currently stored in memory and are cleared when the application exits.
+Tasks and team members are saved in the SQLite database and remain available after the application exits.
+
+## Database
+The application uses a SQLite database named `student_tasks.db` in the working directory. The EF Core migration is in `Migrations/`; apply it to create the database schema before using the application with a new database.
+
+## Time Complexity
+Let **N** be the number of tasks, **M** the number of team members, and **K** the number of tasks assigned to the selected member. Complexity below assumes SQLite uses its primary-key and foreign-key indexes. Database I/O and console output add machine-dependent overhead.
+
+| Operation | Best case | Worst case |
+|---|---:|---:|
+| Reject duplicate member ID | O(1) | O(log M) |
+| Add a unique member (check and insert) | O(log M) | O(log M) |
+| Reject duplicate task ID | O(1) | O(log N) |
+| Add a unique task (check and insert) | O(log N) | O(log N) |
+| Update task status (ID lookup and update) | O(1) | O(log N) |
+| Assign a task to a member (two ID lookups and update) | O(1) | O(log N + log M) |
+| List all members | O(M) | O(M) |
+| List all tasks | O(N) | O(N) |
+| List a member's tasks (indexed foreign-key lookup) | O(log M + log N) | O(log M + log N + K) |
+
+Best-case indexed lookups find the record immediately; worst-case lookups traverse the index. Listing operations must visit and print every returned record. Actual execution time depends on database size, storage, and console output; no fixed runtime is guaranteed.
+
+Updating a task or assigning it also includes a database write. Best-case figures describe immediate index access; actual database I/O and console output can dominate these algorithmic costs.

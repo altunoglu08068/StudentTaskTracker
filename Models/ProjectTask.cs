@@ -1,22 +1,31 @@
+using System;
+
 namespace StudentTaskTracker.Models;
 
 public class ProjectTask
 {
-    public int Id { get; set; } // Proje ID'sini tutan nesnem.
-    public string Title { get; set; } = ""; // Proje başlığını tutan nesnem. Boş olma durumunu önlemek için varsayılan olarak boş string ile başlattım.
-    public string Description { get; set; } = ""; // Proje açıklamasını tutan nesnem. Boş olma durumunu önlemek için bunu da varsayılan olarak boş string ile başlattım.
-    public DateTime DueDate { get; set; } // Proje bitiş tarihini tutan nesnem.
-    public TaskStatus Status { get; set; } // Proje durumunu tutan nesnem.
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public TaskStatus Status { get; set; }
+    public DateTime DueDate { get; set; }
 
-    public TeamMember? AssignedMember { get; set; } // Göreve atanmış olan takım üyesini tutan nesnem. Boş olma durumuna karşı ? ekledim.
+    // Veritabanı Yabancı Anahtarı (Foreign Key)
+    public int? AssignedMemberId { get; set; }
+    public TeamMember? AssignedMember { get; set; }
 
-    public ProjectTask(int id, string title, string description, DateTime dueDate, TeamMember? assignedMember = null)
+    // EF Core'un nesneleri veritabanından çekerken kullanacağı boş constructor
+    public ProjectTask()
+    {
+    }
+
+    // Kod içinde yeni görev oluştururken kullandığımız constructor
+    public ProjectTask(int id, string title, string description, DateTime dueDate)
     {
         Id = id;
         Title = title;
         Description = description;
         DueDate = dueDate;
-        Status = TaskStatus.Backlog; // Tüm görevler Backlog (Bekeleyen görev) olarak başlattım.
-        AssignedMember = assignedMember;
+        Status = TaskStatus.Backlog;
     }
 }

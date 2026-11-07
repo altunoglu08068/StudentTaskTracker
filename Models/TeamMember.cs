@@ -2,12 +2,15 @@ namespace StudentTaskTracker.Models;
 
 public class TeamMember
 {
-    public int Id { get; set; } // Öğrenci Numarasını tutan nesnem.
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
 
-    // Boş olma durumunu önlemek için Name, Email ve Role özelliklerini varsayılan olarak boş string ile başlattım.
-    public string Name { get; set; } = ""; // Öğrenci Adını tutan nesnem.
-    public string Email { get; set; } = ""; // Öğrenci E-posta adresini tutan nesnem.
-    public string Role { get; set; } = ""; // Öğrenci Rolünü tutan nesnem.
+    // EF Core için parametresiz constructor
+    public TeamMember()
+    {
+    }
 
     public TeamMember(int id, string name, string email, string role)
     {
