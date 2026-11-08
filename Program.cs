@@ -63,10 +63,36 @@ namespace StudentTaskTracker
                         string memberEmail = GetInput("Üye E-posta: ");
                         string memberRole = GetInput("Üye Rolü (Geliştirici/Test Uzmanı): ");
 
-                        taskManager.AddMember(memberId, memberName, memberEmail, memberRole);
+                        bool memberAdded = taskManager.AddMember(memberId, memberName, memberEmail, memberRole);
+
+                        if (memberAdded)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"✅ {memberName} ekibe başarıyla eklendi.");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"❗️ Hata: {memberId} ID'li üye zaten mevcut.");
+                            Console.ResetColor();
+                        }
                         break;
                     case "2":
-                        taskManager.ListMembers();
+                        var members = taskManager.GetAllMembers();
+                        if (members.Count == 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("Kayıtlı hiçbir ekip üyesi bulunamadı.");
+                            Console.ResetColor();
+                            break;
+                        }
+
+                        Console.WriteLine("\n--- EKİP ÜYELERİ ---");
+                        foreach (var member in members)
+                        {
+                            Console.WriteLine($"ID: {member.Id} | Ad Soyad: {member.Name} | E-posta: {member.Email} | Rol: {member.Role}");
+                        }
                         break;
                     case "3":
                         Console.WriteLine("\n=== Yeni Görev Ekle ===");
@@ -102,10 +128,37 @@ namespace StudentTaskTracker
                             }
                         }
 
-                        taskManager.AddTask(taskId, taskName, taskDescription, dueDate);
+                        bool taskAdded = taskManager.AddTask(taskId, taskName, taskDescription, dueDate);
+
+                        if (taskAdded)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"✅ '{taskName}' görevi başarıyla eklendi.");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"❗️ Hata: {taskId} ID'li görev zaten mevcut.");
+                            Console.ResetColor();
+                        }
                         break;
                     case "4":
-                        taskManager.ListTasks();
+                        var tasks = taskManager.GetAllTasks();
+                        if (tasks.Count == 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("Kayıtlı hiçbir görev bulunamadı.");
+                            Console.ResetColor();
+                            break;
+                        }
+
+                        Console.WriteLine("\n--- TÜM GÖREVLER ---");
+                        foreach (var task in tasks)
+                        {
+                            string memberInfo = task.AssignedMember != null ? task.AssignedMember.Name : "Atama Yapılmadı";
+                            Console.WriteLine($"Görev ID: {task.Id} | Başlık: {task.Title} | Durum: {task.Status} | Bitiş: {task.DueDate:dd.MM.yyyy} | Atanan: {memberInfo}");
+                        }
                         break;
                     case "5":
                         Console.WriteLine("\n=== Göreve Üye Ata ===");
@@ -137,7 +190,30 @@ namespace StudentTaskTracker
                             }
                         }
 
-                        taskManager.AssignTask(assignTaskId, assignMemberId);
+                        var assignResult = taskManager.AssignTask(assignTaskId, assignMemberId);
+                        switch (assignResult)
+                        {
+                            case AssignTaskResult.Success:
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine($"✅ {assignTaskId} ID'li görev başarıyla üyeye atandı.");
+                                Console.ResetColor();
+                                break;
+                            case AssignTaskResult.TaskNotFound:
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"❗️ Hata: {assignTaskId} ID'li görev bulunamadı.");
+                                Console.ResetColor();
+                                break;
+                            case AssignTaskResult.MemberNotFound:
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"❗️ Hata: {assignMemberId} ID'li üye bulunamadı.");
+                                Console.ResetColor();
+                                break;
+                            default:
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("❗️ Bilinmeyen bir hata oluştu.");
+                                Console.ResetColor();
+                                break;
+                        }
                         break;
                     case "6":
                         Console.WriteLine("\n=== Öğrencinin Görevlerini Listele ===");
@@ -155,7 +231,28 @@ namespace StudentTaskTracker
                             }
                         }
 
-                        taskManager.ListTasksByMemberId(memberIdForTasks);
+                        var memberTasks = taskManager.GetTasksByMemberId(memberIdForTasks, out string? assignedMemberName);
+                        if (memberTasks == null)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"❗️ Hata: {memberIdForTasks} ID'li üye bulunamadı.");
+                            Console.ResetColor();
+                            break;
+                        }
+
+                        Console.WriteLine($"\n--- {assignedMemberName} ÜZERİNDEKİ GÖREVLER ---");
+                        if (memberTasks.Count == 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("Bu üyeye atanmış görev bulunmuyor.");
+                            Console.ResetColor();
+                            break;
+                        }
+
+                        foreach (var task in memberTasks)
+                        {
+                            Console.WriteLine($"Görev ID: {task.Id} | Başlık: {task.Title} | Durum: {task.Status} | Bitiş: {task.DueDate:dd.MM.yyyy}");
+                        }
                         break;
                     case "7":
                         Console.WriteLine("\n=== Görev Durumu Güncelle ===");
@@ -211,7 +308,19 @@ namespace StudentTaskTracker
                             }
                         }
 
-                        taskManager.UpdateTaskStatus(taskIdForStatus, newStatus);
+                        bool statusUpdated = taskManager.UpdateTaskStatus(taskIdForStatus, newStatus);
+                        if (statusUpdated)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("✅ Görev durumu başarıyla güncellendi.");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"❗️ Hata: {taskIdForStatus} ID'li görev bulunamadı.");
+                            Console.ResetColor();
+                        }
                         break;
                     case "0":
                         Console.WriteLine("Programdan çıkılıyor. İyi çalışmalar!");

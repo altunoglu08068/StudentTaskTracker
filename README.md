@@ -9,7 +9,7 @@ StudentTaskTracker helps student project teams organize tasks, assign responsibi
 - Add and list team members, including their name, email, and role.
 - Create tasks with a title, description, and due date.
 - List all tasks and see their status and assigned member.
-- Assign a task to a team member and list tasks assigned to a specific member.
+- Assign a task to a team member, report whether the task or member was not found, and list tasks assigned to a specific member.
 - Update a task's status: `Backlog`, `InProgress`, `InReview`, or `Done`.
 - Validate positive numeric IDs and status selections in the interactive menu.
 - Persist tasks and team members in a SQLite database using Entity Framework Core.
@@ -17,6 +17,7 @@ StudentTaskTracker helps student project teams organize tasks, assign responsibi
 ## Project Structure
 - `Models/`: Core domain models representing business entities.
   - `TaskStatus.cs`: Enum defining task stages (`Backlog`, `InProgress`, `InReview`, `Done`).
+  - `AssignTaskResult.cs`: Enum defining task assignment outcomes (`Success`, `TaskNotFound`, `MemberNotFound`).
   - `TeamMember.cs`: Model representing student team members.
   - `ProjectTask.cs`: Model representing assigned tasks with deadlines and status.
 - `Services/`: Business logic for managing team members and tasks.
@@ -29,7 +30,7 @@ StudentTaskTracker helps student project teams organize tasks, assign responsibi
 
 ## Current Status
 - [x] Initial repository setup
-- [x] Domain models implementation (`TaskStatus`, `TeamMember`, `ProjectTask`)
+- [x] Domain models implementation (`TaskStatus`, `AssignTaskResult`, `TeamMember`, `ProjectTask`)
 - [x] Task and member management services (`TaskManager`)
 - [x] Interactive console interface
 - [x] Database persistence (SQLite / EF Core)
