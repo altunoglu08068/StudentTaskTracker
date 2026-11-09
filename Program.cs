@@ -1,4 +1,5 @@
 ﻿using System;
+using StudentTaskTracker.Data;
 using StudentTaskTracker.Models;
 using StudentTaskTracker.Services;
 
@@ -33,7 +34,8 @@ namespace StudentTaskTracker
 
         static void Main(string[] args)
         {
-            TaskManager taskManager = new TaskManager();
+            using var context = new AppDbContext();
+            TaskManager taskManager = new TaskManager(context);
 
             while (true)
             {
