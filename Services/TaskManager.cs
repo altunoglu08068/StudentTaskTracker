@@ -32,16 +32,13 @@ public class TaskManager
         return _context.Members.ToList();
     }
 
-    // 3. Yeni Görev Ekleme (Başarılıysa true, ID zaten varsa false)
-    public bool AddTask(int id, string title, string description, DateTime dueDate)
+    // 3. Yeni Görev Ekleme (ID otomatik oluşturulup döndürülecek)
+    public int AddTask(string title, string description, DateTime dueDate)
     {
-        bool exists = _context.Tasks.Any(t => t.Id == id);
-        if (exists) return false;
-
-        ProjectTask newTask = new ProjectTask(id, title, description, dueDate);
+        ProjectTask newTask = new ProjectTask(title, description, dueDate);
         _context.Tasks.Add(newTask);
         _context.SaveChanges();
-        return true;
+        return newTask.Id;
     }
 
     // 4. Tüm Görevleri Getirme (Atanan üyeyle birlikte LEFT JOIN)

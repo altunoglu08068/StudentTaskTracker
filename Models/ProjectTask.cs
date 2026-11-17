@@ -20,9 +20,8 @@ public class ProjectTask
     }
 
     // Kod içinde yeni görev oluştururken kullandığımız constructor
-    public ProjectTask(int id, string title, string description, DateTime dueDate)
+    public ProjectTask(string title, string description, DateTime dueDate)
     {
-        Id = id;
         Title = title;
         Description = description;
         DueDate = dueDate;

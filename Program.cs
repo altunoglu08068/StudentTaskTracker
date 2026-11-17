@@ -78,20 +78,6 @@ namespace StudentTaskTracker
                         break;
                     case "3":
                         Console.WriteLine("\n=== Yeni Görev Ekle ===");
-                        int taskId;
-
-                        while (true)
-                        {
-                            string idInput = GetInput("Görev ID (pozitif bir sayı): ");
-                            if (int.TryParse(idInput, out taskId) && taskId > 0)
-                                break;
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("❗️ Geçersiz ID. Lütfen pozitif bir sayı girin.");
-                                Console.ResetColor();
-                            }
-                        }
 
                         string taskName = GetInput("Görev Adı: ");
                         string taskDescription = GetInput("Görev Açıklaması: ");
@@ -110,20 +96,11 @@ namespace StudentTaskTracker
                             }
                         }
 
-                        bool taskAdded = taskManager.AddTask(taskId, taskName, taskDescription, dueDate);
+                        int newTaskId = taskManager.AddTask(taskName, taskDescription, dueDate);
 
-                        if (taskAdded)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine($"✅ '{taskName}' görevi başarıyla eklendi.");
-                            Console.ResetColor();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"❗️ Hata: {taskId} ID'li görev zaten mevcut.");
-                            Console.ResetColor();
-                        }
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"✅ '{taskName}' görevi başarıyla eklendi. Görev ID: {newTaskId}");
+                        Console.ResetColor();
                         break;
                     case "4":
                         var tasks = taskManager.GetAllTasks();
