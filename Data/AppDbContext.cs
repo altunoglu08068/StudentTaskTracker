@@ -9,11 +9,8 @@ public class AppDbContext : DbContext
     public DbSet<TeamMember> Members { get; set; } = null!;
     public DbSet<ProjectTask> Tasks { get; set; } = null!;
 
-    // SQLite bağlantı ayarı
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        // Projenin kök dizininde 'student_tasks.db' dosyasını kullanır
-        optionsBuilder.UseSqlite("Data Source=student_tasks.db");
     }
 
     // İlişkisel model kuralları (Fluent API)

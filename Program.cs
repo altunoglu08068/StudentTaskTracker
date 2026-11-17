@@ -2,6 +2,7 @@
 using StudentTaskTracker.Data;
 using StudentTaskTracker.Models;
 using StudentTaskTracker.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentTaskTracker
 {
@@ -34,7 +35,9 @@ namespace StudentTaskTracker
 
         static void Main(string[] args)
         {
-            using var context = new AppDbContext();
+            DbContextOptionsBuilder<AppDbContext> optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseSqlite("Data Source=student_tasks.db");
+            using var context = new AppDbContext(optionsBuilder.Options);
             TaskManager taskManager = new TaskManager(context);
 
             while (true)
