@@ -16,16 +16,14 @@ public class TaskManager
         _context = context;
     }
 
-    // 1. Ekip Üyesi Ekleme (Başarılıysa true, ID zaten varsa false)
-    public bool AddMember(int id, string name, string email, string role)
+    // 1. Yeni Ekip Üyesi Ekleme (ID otomatik oluşturulup döndürülecek)
+    public int AddMember(string name, string email, string role)
     {
-        bool exists = _context.Members.Any(m => m.Id == id);
-        if (exists) return false;
-
-        TeamMember newMember = new TeamMember(id, name, email, role);
+        // Id otomatik oluşturulduğu için var olup olmadığını kontrol etmemize gerek yok.
+        TeamMember newMember = new TeamMember(name, email, role);
         _context.Members.Add(newMember);
         _context.SaveChanges();
-        return true;
+        return newMember.Id;
     }
 
     // 2. Ekip Üyelerini Getirme

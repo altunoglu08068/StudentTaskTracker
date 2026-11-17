@@ -12,9 +12,8 @@ public class TeamMember
     {
     }
 
-    public TeamMember(int id, string name, string email, string role)
+    public TeamMember(string name, string email, string role)
     {
-        Id = id;
         Name = name;
         Email = email;
         Role = role;

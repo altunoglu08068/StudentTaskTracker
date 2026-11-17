@@ -49,39 +49,16 @@ namespace StudentTaskTracker
                 {
                     case "1":
                         Console.WriteLine("\n=== Ekip Üyesi Ekle ===");
-                        int memberId;
-
-                        while (true)
-                        {
-                            string idInput = GetInput("Üye ID (pozitif bir sayı): ");
-                            if (int.TryParse(idInput, out memberId) && memberId > 0)
-                                break;
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("❗️ Geçersiz ID. Lütfen pozitif bir sayı girin.");
-                                Console.ResetColor();
-                            }
-                        }
 
                         string memberName = GetInput("Üye Adı/Soyadı: ");
                         string memberEmail = GetInput("Üye E-posta: ");
                         string memberRole = GetInput("Üye Rolü (Geliştirici/Test Uzmanı): ");
 
-                        bool memberAdded = taskManager.AddMember(memberId, memberName, memberEmail, memberRole);
+                        int newMemberId = taskManager.AddMember(memberName, memberEmail, memberRole);
 
-                        if (memberAdded)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine($"✅ {memberName} ekibe başarıyla eklendi.");
-                            Console.ResetColor();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"❗️ Hata: {memberId} ID'li üye zaten mevcut.");
-                            Console.ResetColor();
-                        }
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"✅ {memberName} ekibe başarıyla eklendi. Üye ID: {newMemberId}");
+                        Console.ResetColor();
                         break;
                     case "2":
                         var members = taskManager.GetAllMembers();
