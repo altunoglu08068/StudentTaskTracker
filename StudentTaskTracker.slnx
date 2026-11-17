@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="StudentTaskTracker.ConsoleApp/StudentTaskTracker.ConsoleApp.csproj" />
+  <Project Path="StudentTaskTracker.Core/StudentTaskTracker.Core.csproj" />
+</Solution>
