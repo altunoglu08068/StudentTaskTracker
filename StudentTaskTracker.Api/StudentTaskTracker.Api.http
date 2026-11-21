@@ -1,0 +1,6 @@
+@StudentTaskTracker.Api_HostAddress = http://localhost:5007
+
+GET {{StudentTaskTracker.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
